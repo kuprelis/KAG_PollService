@@ -6,7 +6,7 @@ import requests
 from json import JSONDecoder
 import json
 
-cred = credentials.Certificate('service_key.json')
+cred = credentials.Certificate('../data/service_key.json')
 app = firebase_admin.initialize_app(cred)
 
 
@@ -25,7 +25,7 @@ def send_message(title, body, topic):
 
 timestamps = {}
 try:
-    with open('timestamps.json') as file:
+    with open('../data/timestamps.json') as file:
         timestamps = JSONDecoder().decode(file.read())
 except FileNotFoundError:
     pass
@@ -41,5 +41,5 @@ if 'news' in timestamps and item['created_at'] > timestamps['news'] or 'news' no
     timestamps['news'] = item['created_at']
     print(send_message(item['title'], item['primarytext'], 'news'))
 
-with open('timestamps.json', 'w') as file:
+with open('../data/timestamps.json', 'w') as file:
     json.dump(timestamps, file)
