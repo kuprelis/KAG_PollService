@@ -18,7 +18,7 @@ def get_json_obj(url):
 
 
 def send_message(title, body, topic):
-    config = messaging.AndroidConfig(ttl=12*60*60)
+    config = messaging.AndroidConfig(ttl=12*60*60, collapse_key=topic)
     msg = messaging.Message(data={'title': title, 'body': body}, android=config, topic=topic)
     return messaging.send(msg, False, app)
 
