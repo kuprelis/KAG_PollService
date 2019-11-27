@@ -34,17 +34,22 @@ def is_new(key, time):
         return True
     return time > timestamps[key]
 
+try:
+    obj = get_json_obj('http://azuolynogimnazija.lt/json/svarbu')
+    if obj['active'] == 1 and is_new('alerts', obj['updated_at']):
+        timestamps['alerts'] = obj['updated_at']
+        print(send_message(obj['title'], obj['text'], 'alerts'))
+except json.JSONDecodeError:
+    pass
 
-obj = get_json_obj('http://azuolynogimnazija.lt/json/svarbu')
-if obj['active'] == 1 and is_new('alerts', obj['updated_at']):
-    timestamps['alerts'] = obj['updated_at']
-    print(send_message(obj['title'], obj['text'], 'alerts'))
-
-obj = get_json_obj('http://azuolynogimnazija.lt/json/news?perpage=1')
-item = obj['data'][0]
-if item['visable'] == 1 and is_new('news', item['created_at']):
-    timestamps['news'] = item['created_at']
-    print(send_message(item['title'], item['primarytext'], 'news'))
+try:
+    obj = get_json_obj('http://azuolynogimnazija.lt/json/news?perpage=1')
+    item = obj['data'][0]
+    if item['visable'] == 1 and is_new('news', item['created_at']):
+        timestamps['news'] = item['created_at']
+        print(send_message(item['title'], item['primarytext'], 'news'))
+except json.JSONDecodeError:
+    pass
 
 with open('data/timestamps.json', 'w') as file:
     json.dump(timestamps, file)
